@@ -8,7 +8,7 @@ class RectPainter extends CustomPainter {
     if (event == null)
       return;
     else {
-      // dprint('--------------------------------canvas size $size');
+      // print('--------------------------------canvas size $size');
       double scale = size.width / 480.0;
       double left = event!["left"] * scale;
       double top = event!["top"] * scale;

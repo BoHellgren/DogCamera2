@@ -1,15 +1,5 @@
 # mycamx
 
-A new Flutter plugin project.
-
-## Getting Started
-
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
-
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
+A plugin and an app called Dog Camera 2.
+A prototype for testing object detection and image classification with Flutter, CameraX and MediaPipe.
+Read about it in a story on Medium.com called "Flutter, CameraX and MediaPipe".

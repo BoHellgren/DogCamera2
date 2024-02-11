@@ -16,30 +16,15 @@ abstract class MycamxPlatform extends PlatformInterface {
   /// Defaults to [MethodChannelMycamx].
   static MycamxPlatform get instance => _instance;
 
-  /// Platform-specific implementations should set this with their own
-  /// platform-specific class that extends [MycamxPlatform] when
-  /// they register themselves.
   static set instance(MycamxPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
-  Future<int?> getBatteryLevel() {
-    throw UnimplementedError('batteryLevel() has not been implemented.');
-  }
   Future<int?> startCamera() {
     throw UnimplementedError('startCamera() has not been implemented.');
   }
   Future<String?> takePhoto() {
     throw UnimplementedError('takePhoto() has not been implemented.');
-  }
-  Future<Uint8List?> takePhoto2() {
-    throw UnimplementedError('takePhoto2() has not been implemented.');
-  }
-  Future<int?> createTexture() {
-    throw UnimplementedError('createTexture() has not been implemented.');
   }
 }

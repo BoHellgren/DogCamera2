@@ -1,4 +1,5 @@
 -ignorewarnings
--keep class * {
-    public private *;
-}
+-keep public class com.google.mediapipe.** { *; }
+-keep public class com.google.mediapipe.framework.Graph { *; }
+-keep public class com.google.common.** { *; }
+-keep public interface com.google.common.** { *; }

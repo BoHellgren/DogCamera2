@@ -29,7 +29,8 @@ android {
         namespace 'se.ndssoft.mycamx'
     }
 
-    compileSdkVersion 33
+    compileSdkVersion 30
+    // compile 30
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

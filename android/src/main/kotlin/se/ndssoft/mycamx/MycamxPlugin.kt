@@ -7,8 +7,6 @@ import android.os.Build.VERSION_CODES
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Surface
-import androidx.camera.camera2.internal.compat.workaround.TargetAspectRatio
-import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
@@ -52,6 +50,7 @@ class MycamxPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, EventChann
     private var textureId: Long? = 0
     private var event: EventChannel? = null
     private var sink: EventChannel.EventSink? = null
+
     // private var photoName = "No dog in sight!"
     private var lastMap = mapOf(
         "left" to 0f,
@@ -100,19 +99,19 @@ class MycamxPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, EventChann
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
-            if (call.method == "startCamera") {
-                //  Log.d(TAG, "***************** will now call startCamera")
-                val textureId = startCamera()
-                result.success(textureId)
-            } else if (call.method == "takePhoto") {
-                val photoName = takePhoto()
-                result.success(photoName)
-                /*     } else if (call.method == "takePhoto2") {
-                           with(result) { success(byteArraySave) } */
-            } else {
-                result.notImplemented()
-            }
+        if (call.method == "startCamera") {
+            //  Log.d(TAG, "***************** will now call startCamera")
+            val textureId = startCamera()
+            result.success(textureId)
+        } else if (call.method == "takePhoto") {
+            val photoName = takePhoto()
+            result.success(photoName)
+            /*     } else if (call.method == "takePhoto2") {
+                       with(result) { success(byteArraySave) } */
+        } else {
+            result.notImplemented()
         }
+    }
 
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -124,11 +123,11 @@ class MycamxPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, EventChann
         //  Log.d(TAG, "*****************startCamera called")
         val cameraProviderFuture = ProcessCameraProvider.getInstance(mContext!!)
         cameraProviderFuture.addListener({
-         //   backgroundExecutor = Executors.newSingleThreadExecutor()
-         //   backgroundExecutor.execute {
-         //   val executor = ContextCompat.getMainExecutor(mContext!!)
+            //   backgroundExecutor = Executors.newSingleThreadExecutor()
+            //   backgroundExecutor.execute {
+            //   val executor = ContextCompat.getMainExecutor(mContext!!)
 
-         //   val executor = Executors.newSingleThreadExecutor()
+            //   val executor = Executors.newSingleThreadExecutor()
 
             // preview
             textureEntry = textureRegistry!!.createSurfaceTexture()
@@ -148,7 +147,6 @@ class MycamxPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, EventChann
                 Log.d(TAG, "request.provideSurface done")
 
 
-
             }
             val preview = Preview.Builder().build().apply { setSurfaceProvider(surfaceProvider) }
 
@@ -165,7 +163,12 @@ class MycamxPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, EventChann
                 .setRunningMode(RunningMode.IMAGE)
                 .setMaxResults(5)
                 .build()
-            val objectDetector = ObjectDetector.createFromOptions(mContext, options)
+            var objectDetector: ObjectDetector? = null
+            try {
+                objectDetector = ObjectDetector.createFromOptions(mContext, options)
+            } catch (exc: Exception) {
+                Log.e(TAG, "ObjectDetector.createFromOptions failed:", exc)
+            }
 
             val baseOptions2 = BaseOptions.builder()
                 .setDelegate(Delegate.CPU)
@@ -185,13 +188,13 @@ class MycamxPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, EventChann
                 // val map: Map<String, Any>
                 val map: Map<String, Any> = se.ndssoft.mycamx.analyzeProxy(
                     imageProxy,
-                    objectDetector,
+                    objectDetector!!,
                     imageClassifier,
                 )
                 if ((map["result"] != lastMap["result"]) || (map["left"] != lastMap["left"])) {
                     lastMap = map.toMap()
-                    activity!!.activity.runOnUiThread{
-                         sink?.success(map)
+                    activity!!.activity.runOnUiThread {
+                        sink?.success(map)
                     }
                 }
                 imageProxy.close()
@@ -201,8 +204,8 @@ class MycamxPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, EventChann
                 .setOutputImageRotationEnabled(true)
                 .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-              //.setTargetAspectRatio(AspectRatio.RATIO_16_9)
-              //.setTargetResolution(Size(1280, 720))
+                //.setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                //.setTargetResolution(Size(1280, 720))
                 .build()
             // imageAnalysis.setAnalyzer(executor, analyzer)
             // backgroundExecutor = Executors.newSingleThreadExecutor()
@@ -230,7 +233,7 @@ class MycamxPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, EventChann
     }
 
 
-    private fun takePhoto() : String {
+    private fun takePhoto(): String {
         // Log.d(TAG, "takePhoto called")
 
         // Get a stable reference of the modifiable image capture use case
@@ -265,9 +268,9 @@ class MycamxPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, EventChann
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                 //   Log.d(TAG, output.toString())
-                 /*   val msg = "Saved photo ${photoName}"
-                    Toast.makeText(mContext!!, msg, Toast.LENGTH_SHORT).show() */
+                    //   Log.d(TAG, output.toString())
+                    /*   val msg = "Saved photo ${photoName}"
+                       Toast.makeText(mContext!!, msg, Toast.LENGTH_SHORT).show() */
                     // Log.d(TAG, msg)
                 }
             }

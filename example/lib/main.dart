@@ -42,7 +42,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
     return MaterialApp(
       scaffoldMessengerKey: _messangerKey,
       home: Scaffold(
@@ -55,14 +54,10 @@ class _MyAppState extends State<MyApp> {
               aspectRatio: 3/4,
             child: Stack(children: [
               if (textureId != null) Texture(textureId: textureId!),
-
-              /*   _savedPngBytes == null
-                  ? Texture(textureId: textureId!)
-                  : Image.memory(_savedPngBytes!), */
-
               StreamBuilder(
                   stream: eventChannel.receiveBroadcastStream(),
                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    // print(DateTime.now().millisecondsSinceEpoch);
                     if (snapshot.hasData) {
                       return CustomPaint(
                         painter: RectPainter(snapshot.data),
@@ -77,27 +72,13 @@ class _MyAppState extends State<MyApp> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.only(bottom: 10.0),
           child: FloatingActionButton(
             backgroundColor: Colors.white,
             splashColor: Colors.grey,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             onPressed: () async {
               try {
-                /* takePhoto2
-                var result = await _mycamxPlugin.takePhoto2();
-                ByteBuffer byteBuffer = result!.buffer;
-                imageLib.Image img = imageLib.Image.fromBytes(
-                    width: 480,
-                    height: 640,
-                    bytes: byteBuffer,
-                    numChannels: 4,
-                    bytesOffset: 7,
-                    rowStride: 1920,
-                    order: imageLib.ChannelOrder.rgba);
-                _savedPngBytes = imageLib.encodePng(img);
-                setState(() {});
-                */
                 String? photoName = await _mycamxPlugin.takePhoto();
                 SnackBar snackBar = SnackBar(content: Text('Saved photo: $photoName'));
                 _messangerKey.currentState!.showSnackBar(snackBar);
