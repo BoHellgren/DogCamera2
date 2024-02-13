@@ -1,5 +1,3 @@
--ignorewarnings
--keep public class com.google.mediapipe.** { *; }
--keep public class com.google.mediapipe.framework.Graph { *; }
--keep public class com.google.common.** { *; }
--keep public interface com.google.common.** { *; }
+
+-dontobfuscate
+-keep class com.google.mediapipe.** {*;}
